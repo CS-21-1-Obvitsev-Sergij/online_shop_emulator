@@ -2,13 +2,15 @@
     "name": "shop",
     "version": "1.0.0",
     "scripts": {
-      "start": "concurrently \"npm run server\" \"npm run front\"",
-      "server": "cd server && npm start",
-      "front": "cd front && npm run serve",
-      "install-all": "cd server && npm install && cd ../front && npm install"
+        "start": "concurrently \"npm run server\" \"npm run front\"",
+        "server": "cd server && npm start",
+        "front": "cd front && npm run serve",
+        "install-all": "cd server && npm install && cd ../front && npm install"
     },
     "devDependencies": {
-      "concurrently": "^5.2.0"
+        "concurrently": "^5.2.0"
+    },
+    "dependencies": {
+        "bootstrap": "^5.3.2"
     }
-  }
-  
+}
