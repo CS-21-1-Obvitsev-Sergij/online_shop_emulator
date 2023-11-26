@@ -1,0 +1,30 @@
+<script setup>
+import { defineProps } from 'vue';
+import { useCategory } from '@/stores/adminPanel/categoryStore';
+
+const categoryStore = useCategory();
+const props = defineProps({
+  category: Object
+});
+
+const handleCategoryClick = () => {
+  // Логика обработки клика, например, вывод ID
+  categoryStore.categoryNow = props.category.key;
+  console.log(props.category.key);
+};
+</script>
+
+<template>
+    <li @click.stop="handleCategoryClick">
+      {{ category.name }}
+      <ul v-if="category.children.length">
+        <category-item 
+          v-for="child in category.children" 
+          :key="child.key" 
+          :category="child"
+        />
+      </ul>
+    </li>
+  </template>
+  
+  

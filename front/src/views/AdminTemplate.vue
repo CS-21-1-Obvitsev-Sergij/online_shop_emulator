@@ -1,19 +1,26 @@
 <script setup>
+import { useCategory } from '@/stores/adminPanel/categoryStore';
+
+const categoryStore = useCategory();
 </script>
 
 <template>
     <div class="container-fluid">
         <div class="row">
             <div class="col-2 col-md-2 col-sm-3 menu-fixed sidebar">
-                <router-link to="/">To On-line Market</router-link> |
-               <h1> Admin Panel</h1>
+                <router-link to="/">To On-line Market</router-link> 
+               <h4> Admin Panel</h4>
                <ul>
-                    <li>menu 1</li>
-                    <li>menu 2</li>
+                    <li><router-link to="/admin">Main Page</router-link></li>
+                    <li><router-link to="/admin/category">Categorys</router-link></li>
+                    <li><router-link to="/admin/product">Products</router-link></li>
                </ul>
             </div>
             <div className="col-10 col-md-10 col-sm-9 offset-md-2 offset-sm-3 content">
-                <p> content</p>
+                <div class="alert alert-danger" v-if="categoryStore.error">
+                    {{ categoryStore.msg }}
+                </div>
+                <router-view/>
             </div>
         </div>
     </div>

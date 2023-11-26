@@ -9,7 +9,9 @@
                 Menu
             </div>
             <div class="col-10"> product list </div>
+            <router-view/>
         </div>
+        
     </div>
 </template>
 
