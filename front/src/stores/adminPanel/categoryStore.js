@@ -1,12 +1,13 @@
 import { defineStore } from 'pinia';
-import { getCategorys } from '@/api/api_controller';
+import { getCategorys, addCategory, updateCategory } from '@/api/api_controller';
 import { createCategoryTree } from '@/func/categoryTree';
 
 export const useCategory = defineStore('category',{
     state: () => ({
         category: [],
-        categoryTree: null,
+        categoryTree: [],
         categoryNowKey: null,
+        categoryNow: null,
         msg: '',
         error: false
     }),
@@ -27,6 +28,28 @@ export const useCategory = defineStore('category',{
                 this.categoryTree = createCategoryTree(this.category);
                 console.log('Modify to categoryTREE - ', this.categoryTree);
                 this.error = false;
+            } catch(error) {
+                this.error = true;
+                this.msg   = error;
+            }
+        },
+        async addCategory(cat) {
+            try {
+                
+                const res = await addCategory(cat);
+                console.log('RESPONSE after ADD CAT - ', res);
+                this.getCategorys();
+                return res;
+            } catch(error) {
+                this.error = true;
+                this.msg   = error;
+            }
+        },
+        async updateCategory(cat) {
+            try {
+                const res = await updateCategory(cat);
+                console.log('RESPONSE after ADD CAT - ', res);
+                return res;
             } catch(error) {
                 this.error = true;
                 this.msg   = error;
