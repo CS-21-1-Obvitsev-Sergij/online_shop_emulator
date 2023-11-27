@@ -24,39 +24,7 @@ export const getCategorys = async () => {
             name: 'SmartPhones',
             parent: 'mobile_electronics'
         },
-        {
-            key: 'buttons_mobile_phone',
-            name: 'Buttons Mobile Phone',
-            parent: 'mobile_electronics'
-        },
-        {
-            key: 'tablets',
-            name: 'Tablets',
-            parent: 'mobile_electronics'
-        },
-        {
-            key: 'computers',
-            name: 'Computers',
-            parent: null
-        },
-        {
-            key: 'notebooks',
-            name: 'Notebooks',
-            parent: 'computers'
-        },
-        {
-            key: 'personal_computers',
-            name: 'Personal Computers',
-            parent: 'computers'
-        },
-        {
-            key: 'monitors',
-            name: 'Monitors',
-            parent: 'computers'
-        },
-       
-    ];
-*/    
+      */
 };
 
 export const addCategory = async (cat) => {
@@ -79,7 +47,7 @@ export const addCategory = async (cat) => {
 
 export const updateCategory = async (cat) => {
     try {
-        const response = await fetch(`${API_URL}/category/${cat.key}`, {
+        const response = await fetch(`${API_URL}/category`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'

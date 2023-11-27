@@ -8,6 +8,14 @@ export const useCategory = defineStore('category',{
         categoryTree: [],
         categoryNowKey: null,
         categoryNow: null,
+        validCatInput: {  //валидация полей для добавления/обновления категории
+            key: true,
+            keyMSG: '',
+            name: true,
+            nameMSG: '',
+            parent: true,
+            parentMSG: ''
+        },
         msg: '',
         error: false
     }),
@@ -36,6 +44,10 @@ export const useCategory = defineStore('category',{
         async addCategory(cat) {
             try {
                 
+                if (!this.validKey(cat.key)) {
+                    
+                    return false;
+                }
                 const res = await addCategory(cat);
                 console.log('RESPONSE after ADD CAT - ', res);
                 this.getCategorys();
@@ -47,13 +59,31 @@ export const useCategory = defineStore('category',{
         },
         async updateCategory(cat) {
             try {
+                if (!this.validKey(cat.key)) {
+                 
+                    return false;
+                }
                 const res = await updateCategory(cat);
                 console.log('RESPONSE after ADD CAT - ', res);
+                this.getCategorys();
                 return res;
             } catch(error) {
                 this.error = true;
                 this.msg   = error;
             }
         },
+
+        validKey(key) {
+            const regex = /^[a-z0-9_]+$/;
+            if (!regex.test(key)) {
+                this.validCatInput.key = false;
+                this.validCatInput.keyMSG = 'Invalid category key. Use only lowercase Latin letters and numbers, no spaces.';
+                return false;
+            } else {
+                this.validCatInput.key = true;
+                this.validCatInput.keyMSG = '';
+                return true;
+            }
+        }
     }
 });

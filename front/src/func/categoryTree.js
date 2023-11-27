@@ -1,11 +1,11 @@
 export const createCategoryTree = (categories) => {
     let map = {}, node, roots = [], i;
-    console.log ('in create TREE 1');
+    
     for (i = 0; i < categories.length; i += 1) {
       map[categories[i].key] = i; 
       categories[i].children = [];
     }
-    console.log ('in create TREE 2');
+    
   
     for (i = 0; i < categories.length; i += 1) {
       node = categories[i];
@@ -19,6 +19,6 @@ export const createCategoryTree = (categories) => {
         roots.push(node); 
       }
     }
-    console.log ('in create TREE 3');
+    
     return roots;
   }

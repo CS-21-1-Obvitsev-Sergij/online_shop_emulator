@@ -7,11 +7,14 @@ const client = TableClient.fromConnectionString(connectionString, tableName);
 
 
 const getCategories = async ()=>{
+    
+    await client.createTable();
+
     let entitiesIter = client.listEntities();
     let i = 1;
     const catArray = [];
     for await (const entity of entitiesIter) {
-        console.log(`Entity${i}: Name: ${entity.Name} RowKey: ${entity.rowKey}`);
+        //console.log(`Entity${i}: Name: ${entity.Name} RowKey: ${entity.rowKey}`);
         i++;
         const item = {
             key: entity.rowKey,
@@ -20,7 +23,7 @@ const getCategories = async ()=>{
         }
         catArray.push(item);
     }
-    console.log('Cat in SERVER - ', catArray);
+    //console.log('Cat in SERVER - ', catArray);
     return catArray;
 }
 
@@ -43,7 +46,30 @@ const addCategory = async (cat) => {
     }
 }
 
+const updateCategory = async (cat) => {
+    try {
+
+        if (cat.parent == 'None') {
+            cat.parent = 'null';
+        }
+
+        const testEntity = {
+            partitionKey: "category",
+            rowKey: cat.key,
+            Name: cat.name,
+            ParentCategory: cat.parent
+          };
+        console.log('puputja UPDATE testEntewti = ', testEntity);
+        await client.updateEntity(testEntity, "Replace");
+
+        
+    } catch {
+
+    }
+}
+
   module.exports = {
     getCategories,
-    addCategory
+    addCategory,
+    updateCategory
 };
