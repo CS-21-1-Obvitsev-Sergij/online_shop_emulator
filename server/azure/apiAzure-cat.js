@@ -8,7 +8,14 @@ const client = TableClient.fromConnectionString(connectionString, tableName);
 
 const getCategories = async ()=>{
     
-    await client.createTable();
+    
+    await client.createTable(tableName, {
+        onResponse: (response) => {
+          if (response.status === 409) {
+            console.log(`Table ${tableName} already exists`);
+          }
+        }
+      });
 
     let entitiesIter = client.listEntities();
     let i = 1;

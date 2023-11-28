@@ -12,6 +12,9 @@
 
     const selectedParent = ref(props.category ? props.category.parent : null);
     let textBtn = computed(() => props.type === 'edit' ? 'Save Category' : 'Add new Category');
+    const parentCategories = computed(() => {
+        return categoryStore.category.filter(category => category.parent === null);
+    });
 
     const handleSubmit = async () => {
 
@@ -38,7 +41,7 @@
             <label class="form-label" for="category-parent">Parent Category - selectedParent: {{ selectedParent }}</label>
             <select class="form-control" id="category-parent" name="category-parent" v-model="selectedParent">
                 <option :value="null">None</option>
-                <option v-for="category in categoryStore.category"
+                <option v-for="category in parentCategories"
                         :key="category.key" 
                         :value="category.key">
                     {{ category.name }}

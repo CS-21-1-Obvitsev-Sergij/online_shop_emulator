@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 require('dotenv').config();
 const connectionString = process.env.AZURE_STORAGE_CONNECTION_STRING;
-const { addCategory, getCategories, updateCategory, } = require('../azure/apiAzure.js');
+const { addCategory, getCategories, updateCategory, } = require('../azure/apiAzure-cat.js');
 
 //const verifyToken = require('./path/to/auth').verifyToken;
 

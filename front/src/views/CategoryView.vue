@@ -51,4 +51,4 @@ const addBtn_click = () => {
     .category-ul li {
         cursor: pointer;
     }
-</style>@/stores/categoryStore
+</style>

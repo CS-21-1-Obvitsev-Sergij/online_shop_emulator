@@ -8,7 +8,7 @@ const props = defineProps({
 });
 
 const handleCategoryClick = () => {
-  // Логика обработки клика, например, вывод ID
+  categoryStore.catNowClick = props.category;
   categoryStore.categoryNow = props.category.key;
   console.log(props.category.key);
 };

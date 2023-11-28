@@ -16,6 +16,7 @@ export const useCategory = defineStore('category',{
             parent: true,
             parentMSG: ''
         },
+        catNowClick: null,
         msg: '',
         error: false
     }),
