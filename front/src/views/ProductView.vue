@@ -54,7 +54,7 @@ onMounted( async() => {
                 </div><br/><br/>
                 <div class="alert alert-light" v-if="viewAddForm">
                     <b>Add product</b>
-                    <form>
+                    <form @submit.prevent="handleSubmit">
                         <div class="input-group mb-3">
                             <label class="input-group-text" for="name">Product Name </label>
                             <input type="text" class="form-control" id="name" name="name">
