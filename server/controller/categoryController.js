@@ -61,10 +61,11 @@ const updateCategory_controller = async (req, res) => {
 const getAllCategories_controller = async (req, res) => {
     try {
         const result = await getCategories(); 
+        //console.log('result cat -', result);
         res.json({
             err: result.err,
             msg: result.msg,
-            data: result.categories
+            data: result.data
         });
     } catch (error) {
         res.json({

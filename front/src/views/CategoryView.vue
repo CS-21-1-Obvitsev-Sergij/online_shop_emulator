@@ -8,7 +8,7 @@ import { onMounted } from 'vue';
 const categoryStore = useCategory();
 
 onMounted( async() => {
-   await categoryStore.getCategorys();
+   await categoryStore.getCategories();
 });
 
 const addBtn_click = () => {

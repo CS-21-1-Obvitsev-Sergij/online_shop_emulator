@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { getCategorys, addCategory, updateCategory } from '@/api/api_cat_controller';
+import { getCategories, addCategory, updateCategory } from '@/api/api_cat_controller';
 import { createCategoryTree } from '@/func/categoryTree';
 
 export const useCategory = defineStore('category',{
@@ -35,12 +35,18 @@ export const useCategory = defineStore('category',{
     },
 
     actions: {
-        async getCategorys() {
+        async getCategories() {
             try {
-                this.category = await getCategorys();
-                console.log('Get category - ', this.category);
+                const result = await getCategories();
+                if (result.err) {
+                    this.error = true;
+                    this.msg   = result.msg;
+                    return;
+                }
+                
+                this.category = result.data;
                 this.categoryTree = createCategoryTree(this.category);
-                console.log('Modify to categoryTREE - ', this.categoryTree);
+        
                 this.error = false;
             } catch(error) {
                 this.error = true;
@@ -54,10 +60,15 @@ export const useCategory = defineStore('category',{
                     
                     return false;
                 }
-                const res = await addCategory(cat);
-                console.log('RESPONSE after ADD CAT - ', res);
-                this.getCategorys();
-                return res;
+                const result = await addCategory(cat);
+                if (result.err) {
+                    this.error = true;
+                    this.msg   = result.msg;
+                    return;
+                }
+                console.log('RESPONSE after ADD CAT - ', result);
+                await this.getCategories();
+                return result.data;
             } catch(error) {
                 this.error = true;
                 this.msg   = error;
@@ -71,7 +82,7 @@ export const useCategory = defineStore('category',{
                 }
                 const res = await updateCategory(cat);
                 console.log('RESPONSE after ADD CAT - ', res);
-                this.getCategorys();
+                this.getCategories();
                 return res;
             } catch(error) {
                 this.error = true;
