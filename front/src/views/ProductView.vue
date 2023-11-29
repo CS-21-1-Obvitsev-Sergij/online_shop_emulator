@@ -6,25 +6,59 @@ import { useProduct } from '@/stores/adminPanel/productStore';
 
 const categoryStore = useCategory();
 const productStore  = useProduct();
-const viewAddForm   = ref(false);
+const viewAddForm   = ref(false);       // признак что надо открыть форму добавления товара
+
+const clearAddForm = () => {
+    const nameForm = document.getElementById('nameForm');
+    const priceForm = document.getElementById('priceForm');
+    const fileInput = document.querySelector('input[type="file"]');
+    const catForm = document.getElementById('catForm');
+
+    if (nameForm) nameForm.value = '';
+    if (priceForm) priceForm.value = '';
+    if (fileInput) fileInput.value = '';
+    if (catForm) catForm.value = '';
+}
 
 watch(
     () => categoryStore.catNowClick,
     async (newCategory) => {
+
+        //  сменили категорию - обнуляем форму
+        productStore.errorForm = false;
+        productStore.msgForm = '';
+        clearAddForm();
+
         if (newCategory.children && newCategory.children.length == 0 ) {
             console.log('one CAT')
             productStore.getProductsInCat(newCategory.key);
         } else {
-            console.log('MANY MANY CAT');
-            //const catKeys = await productStore.mapCategoryKey(newCategory);
-            //const catKeys = newCategory.children.map(child => child.key);
-            //console.log('KEYS - ', catKeys);
+            viewAddForm.value = false;
             productStore.getProductsInCatArray(categoryStore.mapCategoryKey);
            
         }
     },
     { immediate: true }
 );
+
+const handleSubmitAddForm = async () => {
+    
+    const data = {
+        name: document.getElementById('nameForm').value,
+        price: document.getElementById('priceForm').value,
+        fileField: document.querySelector('input[type="file"]'),
+        categoryKey: document.getElementById('catForm').value,
+    } 
+
+    await productStore.addProduct(data);
+
+    if (!productStore.errorForm) {
+        console.log('done form')
+        clearAddForm();
+    } else {
+        console.log('not DONE form');
+    }
+};
 
 const btnAddClick = ()=>{
     viewAddForm.value = !viewAddForm.value;
@@ -54,20 +88,35 @@ onMounted( async() => {
                 </div><br/><br/>
                 <div class="alert alert-light" v-if="viewAddForm">
                     <b>Add product</b>
-                    <form @submit.prevent="handleSubmit">
+                    <div    class="alert alert-success" 
+                            v-if="!productStore.errorForm && productStore.msgForm.length > 0"
+                            > 
+                                Add new product is ... DONE
+                    </div>
+                    <div    class="alert alert-warning" 
+                            v-if="productStore.errorForm"
+                            > 
+                                <h5>Error</h5>
+                                <p>{{ productStore.msgForm }}</p>
+                    </div>
+                    <form @submit.prevent="handleSubmitAddForm">
                         <div class="input-group mb-3">
-                            <label class="input-group-text" for="name">Product Name </label>
-                            <input type="text" class="form-control" id="name" name="name">
+                            <label class="input-group-text" for="catNameForm">Category </label>
+                            <input type="text" class="form-control" id="catNameForm" name="catNameForm" v-model="categoryStore.catNowClick.name" disabled>
                         </div>
                         <div class="input-group mb-3">
-                            <label class="input-group-text" for="price">Price $</label>
-                            <input type="text" class="form-control" id="price" name="price">
+                            <label class="input-group-text" for="nameForm">Product Name </label>
+                            <input type="text" class="form-control" id="nameForm" name="nameForm">
                         </div>
                         <div class="input-group mb-3">
-                            <label class="input-group-text" for="foto">File (foto)</label>
-                            <input type="file" class="form-control" id="foto" name="foto">
+                            <label class="input-group-text" for="priceForm">Price $</label>
+                            <input type="text" class="form-control" id="priceForm" name="priceForm">
                         </div>
-                        <input type="hidden" name="cat" :value="categoryStore.categoryNow.key">
+                        <div class="input-group mb-3">
+                            <label class="input-group-text" for="fotoForm">File (foto)</label>
+                            <input type="file" class="form-control" id="fotoForm" name="fotoForm">
+                        </div>
+                        <input type="hidden" name="catForm" id="catForm" :value="categoryStore.catNowClick.key">
                         <input type="submit" class="btn btn-info" value="Send Product">
                     </form>
                 </div>

@@ -1,13 +1,15 @@
 
 import { defineStore } from 'pinia';
 
-import {getProductInCat, getProductInCatArray} from '@/api/api_prod_controller';
+import {getProductInCat, getProductInCatArray, addProduct} from '@/api/api_prod_controller';
 
 export const useProduct = defineStore('product',{
     state: () => ({
         products: [],
         msg: '',
-        error: false
+        error: false,
+        errorForm: false,
+        msgForm: '',
     }),
 
     getters: {
@@ -40,9 +42,47 @@ export const useProduct = defineStore('product',{
                 this.msg   = error;
             }
         },
-        async addProduct() {
+        async addProduct(data) {
             try {
-                console.log('add');
+                console.log('ADD PRODUCT formData - ');
+                
+                // валидация параметров формы
+                if (!data.name) {
+                    this.errorForm = true;
+                    this.msgForm = 'Name  - empty';
+                    return;
+                }
+                if (!data.price || isNaN(data.price) || Number(data.price) <= 0) {
+                    
+                    this.errorForm = true;
+                    this.msgForm = 'Price  -  must be not empty AND its must be integer ';
+                    return;
+                }
+            
+                // Проверка файла
+                if (data.fileField.files.length === 0) {
+                    this.errorForm = true;
+                    this.msgForm = 'File  - its must be select';
+                    return;
+                }
+            
+                const file = data.fileField.files[0];
+                const validImageTypes = ['image/jpeg', 'image/png', 'image/gif'];
+                if (!validImageTypes.includes(file.type)) {
+                    this.errorForm = true;
+                    this.msgForm = 'The file must be in IN format  (jpeg, png, gif)';
+                    return;
+                }
+                // данные на отправку
+                const formData = new FormData();
+                formData.append('name', data.name);
+                formData.append('price', data.price);
+                formData.append('foto', data.fileField.files[0]);
+                formData.append('cat', data.categoryKey);
+
+                this.errorForm = false;
+                const result = await addProduct(formData);
+                return result;
             } catch(error) {
                 this.error = true;
                 this.msg   = error;

@@ -1,7 +1,7 @@
 require('dotenv').config();
-const { TableClient } = require("@azure/data-tables");
 const connectionString = "UseDevelopmentStorage=true";
 const tableName = process.env.TABLE_NAME_CATEGORY;
+const { TableClient } = require("@azure/data-tables");
 const client = TableClient.fromConnectionString(connectionString, tableName);
 
 
@@ -75,8 +75,29 @@ const updateCategory = async (cat) => {
     }
 }
 
+const deleteCategory = async (catKey) => {
+    try {
+        // удалить можно нижнюю категорию, а можно заглавную (с подкатегориями)
+        // в категории могут быть товары, а могут не быть
+
+        // 1 - прочитать данные про катгеорию с таблицы
+
+        // 2 - если parent ==null Значить заглавная категория
+            // 2 - а получить список подкатегорий
+            // 2 - б удалить все подкатегории
+            // 2 - с удалить все товары с этими категориями
+
+        // 3 - если парент что тесть - значит  не заглавная
+            // 3 - а удалить все товары для этой категории ?!?
+        return catKey;
+    } catch(error) {
+
+    }
+}
+
   module.exports = {
     getCategories,
     addCategory,
-    updateCategory
+    updateCategory,
+    deleteCategory
 };

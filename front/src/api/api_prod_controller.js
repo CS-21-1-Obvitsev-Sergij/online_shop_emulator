@@ -16,7 +16,6 @@ export const getProductInCat = async (catKey) => {
 
 export const getProductInCatArray = async (catKeys) => {
     try {
-        console.log('CAT KEYS IN API  --- ', catKeys);
         const response = await fetch(`${API_URL}/product/parent`, {
             method: 'POST',
             headers: {
@@ -37,21 +36,19 @@ export const getProductInCatArray = async (catKeys) => {
 }
 
 
-export const addCategory = async (cat) => {
+export const addProduct = async (formData) => {
     try {
-        const response = await fetch(`${API_URL}/category`, {
+        const response = await fetch(`${API_URL}/product`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(cat)
+            body: formData,
         });
+
         if (!response.ok) {
             throw new Error(`Error: ${response.status}`);
         }
-        return await response.json(); // Предполагается, что сервер возвращает какой-то ответ
+        return await response.json(); 
     } catch (error) {
-        console.error('Ошибка при добавлении категории:', error);
+        console.error('Error in add product . Error text: ', error);
     }
 };
 
