@@ -4,9 +4,7 @@ const tableName = process.env.TABLE_NAME_CATEGORY;
 const { TableClient } = require("@azure/data-tables");
 const client = TableClient.fromConnectionString(connectionString, tableName);
 
-
-
-const getCategories = async ()=>{
+const getCategories = async ()=> {
     
     
     await client.createTable(tableName, {
