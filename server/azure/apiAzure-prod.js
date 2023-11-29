@@ -11,6 +11,7 @@ const getProductInCat = async (prodCat)=>{  //partitionKey
     const filter = odata`PartitionKey eq ${prodCat}`;
     const products = [];
     console.log(filter);
+   
     const entities = client.listEntities({
         queryOptions: { filter: filter }
     });
@@ -22,8 +23,25 @@ const getProductInCat = async (prodCat)=>{  //partitionKey
     return products;
 }
 
+const getProductInCatArray = async (prodCats)=>{  //partitionKey
+    
+    const filter = prodCats.map(key => odata`PartitionKey eq ${key}`).join(' or ');
+    const products = [];
+    console.log(filter);
+   
+    const entities = client.listEntities({
+        queryOptions: { filter: filter }
+    });
+
+    for await (const entity of entities) {
+        products.push(entity);
+    } 
+
+    return products;
+}
 
   module.exports = {
     getProductInCat,
+    getProductInCatArray,
     
 };

@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { getCategorys, addCategory, updateCategory } from '@/api/api_controller';
+import { getCategorys, addCategory, updateCategory } from '@/api/api_cat_controller';
 import { createCategoryTree } from '@/func/categoryTree';
 
 export const useCategory = defineStore('category',{
@@ -16,7 +16,7 @@ export const useCategory = defineStore('category',{
             parent: true,
             parentMSG: ''
         },
-        catNowClick: null,
+        catNowClick: { children: []},
         msg: '',
         error: false
     }),
@@ -26,6 +26,11 @@ export const useCategory = defineStore('category',{
             const foundCategory = state.category.find(category => category.key === state.categoryNow);
             console.log('Getter now cat - ', foundCategory);
             return foundCategory;
+        },
+
+        mapCategoryKey: (state) => {
+            const catKeys = state.catNowClick.children.map(child => child.key);
+            return catKeys;
         },
     },
 
