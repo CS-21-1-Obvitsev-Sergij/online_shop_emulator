@@ -1,41 +1,93 @@
 //require('dotenv').config();
 //const connectionString = process.env.AZURE_STORAGE_CONNECTION_STRING;
-const { addCategory, getCategories, updateCategory, deleteCategory} = require('../azure/apiAzure-cat.js');
+const { addCategory, getCategories, updateCategory, deleteCategory, getOneEntity} = require('../azure/apiAzure-cat.js');
+
+//const response = {
+//    err: false,
+//    msg: '',
+//    data:null
+//}
 
 const addCategory_controller = async (req, res) => {
     try {
-        const newCategory = req.body; 
-        await addCategory(newCategory);
-        res.status(201).send(newCategory);
+        const newCategory = req.body;
+        // проверка на наличие такого ключа категории
+        let  result = await getOneEntity();
+        if (result.entity.rowKey === newCategory.key) {
+            res.status(200).json({
+                err: true,
+                msg: 'Category whith this key ('+newCategory.key+') - alredy exists'
+            });
+        }
+
+        result = await addCategory(newCategory);
+
+        if (result.err) {
+            res.status(200).json({
+                err: true,
+                msg: result.msg
+            });
+        }
+
+        res.status(200).json({
+            err: false,
+            msg: '',
+            data: newCategory
+        });
       } catch (error) {
-        res.status(500).send(error.message);
+            res.json({
+                err: true,
+                msg: error.message
+            });
       }
 }
+
 const updateCategory_controller = async (req, res) => {
     try {
         const dataCategory = req.body;
-        await updateCategory(dataCategory);
-        res.send(categoryData);
+        const result = await updateCategory(dataCategory);
+        res.json({
+            err: result.err,
+            msg: result.msg,
+            data: categoryData
+        });
     } catch (error) {
-        res.status(500).send(error.message);
+        res.json({
+            err: true,
+            msg: error.message,
+        });
     }
 }
 const getAllCategories_controller = async (req, res) => {
     try {
-        const categories = await getCategories(); 
-        res.status(200).json(categories);
+        const result = await getCategories(); 
+        res.json({
+            err: result.err,
+            msg: result.msg,
+            data: result.categories
+        });
     } catch (error) {
-        res.status(500).send(error.message);
+        res.json({
+            err: true,
+            msg: error.message,
+        });
     }
 }
 const deleteCategory_controller = async (req, res) => {
     try {
         const catKey = req.params.catKey;
         // валидация ключа ?!
-        await deleteCategory(dataCategory);
-        res.status(200).send('ok del cat and del XX products');
+       const result = await deleteCategory({partitionKey:'category', rowKey:catKey});
+        res.json({
+            err: result.err,
+            msg: result.msg,
+            data: result.catKey
+        });
     } catch (error) {
-        res.status(500).send(error.message);
+        res.json({
+            err: true,
+            msg: error.message,
+        });
     }
 }
 module.exports = {

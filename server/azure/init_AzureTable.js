@@ -8,7 +8,13 @@ const client = TableClient.fromConnectionString(connectionString, tableName);
 // заполнение их начальнымитестовыми данными
 
 const initTable = async () => {
-    
+    await client.createTable(tableName, {
+        onResponse: (response) => {
+          if (response.status === 409) {
+            console.log(`Table ${tableName} already exists`);
+          }
+        }
+      });
 }
 
 module.exports = {

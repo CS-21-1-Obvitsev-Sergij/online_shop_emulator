@@ -1,9 +1,6 @@
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-const multer = require('multer');
-const upload = multer({ dest: 'uploads/' });
-
 //const authRouter = require('./auth/auth.js');
 
 
@@ -20,12 +17,14 @@ app.use('/product', productRouter);
 //app.use('/auth', authRouter);
 
 app.get('/', (req, res) => {
-  res.send('Hello World!');
+  res.send('start :)');
 });
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, async () => {
   try {
+    // проверка флага о наличии инициализации
+    // инициализация таблиц
       //await createTableIfNotExists(tableName);
       console.log(`Server is running on port ${PORT}`);
   } catch (error) {

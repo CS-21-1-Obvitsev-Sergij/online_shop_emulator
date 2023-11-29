@@ -4,41 +4,59 @@ const tableName = process.env.TABLE_NAME_CATEGORY;
 const { TableClient } = require("@azure/data-tables");
 const client = TableClient.fromConnectionString(connectionString, tableName);
 
-const getCategories = async ()=> {
-    
-    
-    await client.createTable(tableName, {
-        onResponse: (response) => {
-          if (response.status === 409) {
-            console.log(`Table ${tableName} already exists`);
-          }
-        }
-      });
+//const res = {
+//    err: false,
+//    msg: '',
+//    data: null
+//};
 
-    let entitiesIter = client.listEntities();
-    let i = 1;
-    const catArray = [];
-    for await (const entity of entitiesIter) {
-        //console.log(`Entity${i}: Name: ${entity.Name} RowKey: ${entity.rowKey}`);
-        i++;
-        const item = {
-            key: entity.rowKey,
-            name: entity.Name,
-            parent: entity.ParentCategory
+const getCategories = async ()=> {
+    try {
+        let entitiesIter = client.listEntities();
+        const catArray = [];
+        for await (const entity of entitiesIter) {
+            //console.log(`Entity${i}: Name: ${entity.Name} RowKey: ${entity.rowKey}`);
+            const item = {
+                key: entity.rowKey,
+                name: entity.Name,
+                parent: entity.ParentCategory
+            }
+            catArray.push(item);
         }
-        catArray.push(item);
+        //console.log('all cat - ', catArray);
+        return { err: false,
+                msg: '',
+                data: catArray
+            };
+
+    } catch(err) {
+        return { err: true,
+            msg: err.message
+        };
     }
-    //console.log('Cat in SERVER - ', catArray);
-    return catArray;
+    
+}
+
+const getOneEntity = async (keys) => {
+    try {
+        const entity = await client.getEntity(keys.partitionKey, keys.rowKey);
+        return { err: false,
+            msg: '',
+            data: entity
+       };
+    } catch(err) {
+        return {    err: true,
+                    msg: err.message
+       };
+    }
 }
 
 const addCategory = async (cat) => {
     try {
-
+        
         if (cat.parent == 'None') {
             cat.parent = 'null';
         }
-
         const testEntity = {
             PartitionKey: "category",
             RowKey: cat.key,
@@ -46,8 +64,16 @@ const addCategory = async (cat) => {
             ParentCategory: cat.parent
           };
         await client.createEntity(testEntity);
-    } catch {
 
+        return { err: false,
+                 msg: '',
+                 data: entity
+        };
+
+    } catch(err) {
+        return { err: true,
+                 msg: err.message
+       };
     }
 }
 
@@ -64,17 +90,22 @@ const updateCategory = async (cat) => {
             Name: cat.name,
             ParentCategory: cat.parent
           };
-        console.log('puputja UPDATE testEntewti = ', testEntity);
         await client.updateEntity(testEntity, "Replace");
 
-        
-    } catch {
-
+        return { err: false,
+            msg: '',
+            data: null
+   };
+    } catch(err) {
+        return { err: true,
+            msg: err.message
+        };
     }
 }
 
-const deleteCategory = async (catKey) => {
-    try {
+const deleteCategory = async (catKeys) => {
+    try { 
+        // catKey.partitionKey catKey.rowKey
         // удалить можно нижнюю категорию, а можно заглавную (с подкатегориями)
         // в категории могут быть товары, а могут не быть
 
@@ -82,14 +113,20 @@ const deleteCategory = async (catKey) => {
 
         // 2 - если parent ==null Значить заглавная категория
             // 2 - а получить список подкатегорий
-            // 2 - б удалить все подкатегории
+            // 2 - б удалить все подкатегории  deleteCategory()
             // 2 - с удалить все товары с этими категориями
 
         // 3 - если парент что тесть - значит  не заглавная
             // 3 - а удалить все товары для этой категории ?!?
-        return catKey;
+        return { err: false,
+                msg: '',
+                data: catKeys
+        };
+       
     } catch(error) {
-
+        return { err: true,
+                 msg: err.message
+        };
     }
 }
 
@@ -97,5 +134,6 @@ const deleteCategory = async (catKey) => {
     getCategories,
     addCategory,
     updateCategory,
-    deleteCategory
+    deleteCategory,
+    getOneEntity
 };

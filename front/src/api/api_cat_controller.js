@@ -4,11 +4,11 @@ export const getCategorys = async () => {
     try {
         const response = await fetch(`${API_URL}/category`);
         if (!response.ok) {
-            throw new Error(`Error: ${response.status}`);
+            throw new Error(`err: ${response.status}`);
         }
-        const categories = await response.json();
-        console.log('FRONT FETCH RESPONSE CAT - ', categories);
-        return categories;
+        const data = await response.json();
+        console.log('FRONT FETCH RESPONSE CAT - ', data.data);
+        return data;
     } catch (error) {
         console.error('Ошибка при получении категорий:', error);
     }
