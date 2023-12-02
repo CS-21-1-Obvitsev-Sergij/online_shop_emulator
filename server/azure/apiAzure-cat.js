@@ -1,7 +1,7 @@
 require('dotenv').config();
 const connectionString = "UseDevelopmentStorage=true";
 const tableName = process.env.TABLE_NAME_CATEGORY;
-const { TableClient } = require("@azure/data-tables");
+const { TableClient, odata } = require("@azure/data-tables");
 const client = TableClient.fromConnectionString(connectionString, tableName);
 
 //const res = {
@@ -45,16 +45,19 @@ const getOneEntity = async (keys) => {
             data: entity
        };
     } catch(err) {
-        return {    err: true,
-                    msg: err.message
-       };
+        if (err.statusCode === 404) {
+            return { err: false, msg: 'Not Found', data:{} };
+        } else {
+            
+            return { err: true, msg: err.message };
+        }
     }
 }
 
 const addCategory = async (cat) => {
     try {
         
-        if (cat.parent == 'None') {
+        if (cat.parent == 'None' || cat.parent == '') {
             cat.parent = 'null';
         }
         const testEntity = {
@@ -67,7 +70,7 @@ const addCategory = async (cat) => {
 
         return { err: false,
                  msg: '',
-                 data: entity
+                 data: cat
         };
 
     } catch(err) {
@@ -90,7 +93,7 @@ const updateCategory = async (cat) => {
             Name: cat.name,
             ParentCategory: cat.parent
           };
-        await client.updateEntity(testEntity, "Replace");
+        await client.updateEntity(testEntity, "Replace"); //Marge
 
         return { err: false,
             msg: '',
@@ -109,7 +112,7 @@ const deleteCategory = async (catKeys) => {
         // удалить можно нижнюю категорию, а можно заглавную (с подкатегориями)
         // в категории могут быть товары, а могут не быть
 
-        // 1 - прочитать данные про катгеорию с таблицы
+        // 1 - прочитать данные про катгеорию с таблицы +
 
         // 2 - если parent ==null Значить заглавная категория
             // 2 - а получить список подкатегорий
@@ -128,12 +131,48 @@ const deleteCategory = async (catKeys) => {
                  msg: err.message
         };
     }
-}
+};
+// get categories whit this parent category
+const getCategoriesWhithParent = async (parentKey) => {
+    try {
+        const filter = odata`ParentCategory eq ${parentKey}`; 
+        const childCats = [];
+        //console.log(filter);
+    
+        const entities = client.listEntities({
+            queryOptions: { filter: filter }
+        });
+
+        for await (const entity of entities) {
+            childCats.push(entity);
+        } 
+       return {err:false, data: childCats};
+    } catch(err) {
+        return { err: true,
+                 msg: err.message
+        };
+    }
+    
+
+};
+// delete category 
+const deleteOneCategory = async (catKey) => { 
+    try {
+        const resDel = await client.deleteEntity('category', catKey);
+        return {err:false}
+    } catch(err) {
+        return { err: true,
+                msg: err.message
+        };
+    }
+};
 
   module.exports = {
     getCategories,
     addCategory,
     updateCategory,
     deleteCategory,
-    getOneEntity
+    getOneEntity,
+    getCategoriesWhithParent,
+    deleteOneCategory
 };

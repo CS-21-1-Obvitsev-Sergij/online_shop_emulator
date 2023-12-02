@@ -13,6 +13,7 @@ onMounted( async() => {
 
 const addBtn_click = () => {
     categoryStore.categoryNow = null;
+    categoryStore.catNowClick = { children: []};
     categoryStore.validCatInput.key = true;
     categoryStore.validCatInput.name = true;
     categoryStore.validCatInput.parent = true;

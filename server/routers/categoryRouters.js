@@ -6,7 +6,7 @@ const categoryController = require('../controller/categoryController.js');
 router.get('/', categoryController.getAllCategories_controller);
 router.post('/', categoryController.addCategory_controller);
 router.put('/', categoryController.updateCategory_controller);
-router.delete('/del/:catKey', categoryController.deleteCategory_controller);
+router.delete('/:catKey', categoryController.deleteCategory_controller);
 
 
 //router.delete('/category/:id', verifyToken, categoryController.deleteCategory);

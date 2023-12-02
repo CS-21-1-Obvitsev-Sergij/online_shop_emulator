@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { getCategories, addCategory, updateCategory } from '@/api/api_cat_controller';
+import { getCategories, addCategory, updateCategory, deleteCategory } from '@/api/api_cat_controller';
 import { createCategoryTree } from '@/func/categoryTree';
 
 export const useCategory = defineStore('category',{
@@ -55,18 +55,19 @@ export const useCategory = defineStore('category',{
         },
         async addCategory(cat) {
             try {
-                
+                cat.key = cat.key.toLowerCase();
                 if (!this.validKey(cat.key)) {
                     
                     return false;
                 }
+                console.log('ADD CAT (IN STORAGE) - ', cat);
                 const result = await addCategory(cat);
                 if (result.err) {
                     this.error = true;
                     this.msg   = result.msg;
                     return;
                 }
-                console.log('RESPONSE after ADD CAT - ', result);
+                console.log('RESPONSE (in CAT STORAGE) after ADD CAT - ', result);
                 await this.getCategories();
                 return result.data;
             } catch(error) {
@@ -81,7 +82,18 @@ export const useCategory = defineStore('category',{
                     return false;
                 }
                 const res = await updateCategory(cat);
-                console.log('RESPONSE after ADD CAT - ', res);
+                console.log('RESPONSE after UPDATE CAT - ', res);
+                this.getCategories();
+                return res;
+            } catch(error) {
+                this.error = true;
+                this.msg   = error;
+            }
+        },
+        async deleteCat(catKey) {
+            try {
+                const res = await deleteCategory(catKey);
+                //console.log('RESPONSE after DELETE CAT - ', res, ' || CatKey = ', catKey);
                 this.getCategories();
                 return res;
             } catch(error) {

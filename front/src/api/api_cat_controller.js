@@ -62,3 +62,21 @@ export const updateCategory = async (cat) => {
         console.error('Ошибка при обновлении категории:', error);
     }
 };
+
+export const deleteCategory = async (catKey) => {
+    try {
+        console.log('FRONT API DELETE . catKey - ', catKey);
+        const response = await fetch(`${API_URL}/category/${encodeURIComponent(catKey)}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        if (!response.ok) {
+            throw new Error(`Error: ${response.status}`);
+        }
+        return await response.json(); 
+    } catch (error) {
+        console.error('Ошибка при delete категории:', error);
+    }
+};

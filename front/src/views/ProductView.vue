@@ -65,7 +65,7 @@ const btnAddClick = ()=>{
 }
 
 onMounted( async() => {
-   await categoryStore.getCategorys();
+   await categoryStore.getCategories();
 });
 </script>
 

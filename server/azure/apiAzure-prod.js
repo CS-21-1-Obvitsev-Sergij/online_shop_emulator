@@ -25,7 +25,7 @@ const getProductInCat = async (prodCat)=>{  //partitionKey
 
 const getProductInCatArray = async (prodCats)=>{  //partitionKey
     
-    const filter = prodCats.map(key => odata`PartitionKey eq ${key}`).join(' or ');
+    const filter = prodCats.map(key => odata`PartitionKey eq ${key}`).join(' or '); // limit 15
     const products = [];
     console.log(filter);
    
@@ -40,8 +40,15 @@ const getProductInCatArray = async (prodCats)=>{  //partitionKey
     return products;
 }
 
+
+const deleteProductInCat = async (catKey)=> {
+
+    return {err:false, msg:'', data:{count:5}};
+}
+
   module.exports = {
     getProductInCat,
     getProductInCatArray,
+    deleteProductInCat,
     
 };

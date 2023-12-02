@@ -1,5 +1,5 @@
 <script setup>
-    import { ref, computed } from 'vue';
+    import {  computed } from 'vue';
     import { defineProps } from 'vue';
     import { useCategory } from '@/stores/adminPanel/categoryStore';
 
@@ -10,11 +10,28 @@
         type: String
     });
 
-    const selectedParent = ref(props.category ? props.category.parent : null);
+    //const selectedParent = ref(props.category ? props.category.parent : null);
     let textBtn = computed(() => props.type === 'edit' ? 'Save Category' : 'Add new Category');
     const parentCategories = computed(() => {
         return categoryStore.category.filter(category => category.parent === null);
     });
+
+    const DeleteBtnClick = async () => { // delete now click cat
+        try {
+            const result = await categoryStore.deleteCat(categoryStore.catNowClick.key);
+            if (result.err) {
+                categoryStore.error = true;
+                categoryStore.msg = result.msg;
+            } else {
+                categoryStore.error = false;
+                categoryStore.catNowClick = {parent: null}
+            }
+        } catch(err) {
+            categoryStore.error = true;
+            categoryStore.msg = err.message;
+        }
+        
+    }
 
     const handleSubmit = async () => {
 
@@ -36,10 +53,17 @@
 </script>
 
 <template>
+    <button v-if="categoryStore.catNowClick.key" class="btn btn-danger" @click="DeleteBtnClick">Delete this Category</button>
+    <span v-else>Create new Category</span>
+    <hr/>
     <form @submit.prevent="handleSubmit">
         <div class="mb-3">
-            <label class="form-label" for="category-parent">Parent Category - selectedParent: {{ selectedParent }}</label>
-            <select class="form-control" id="category-parent" name="category-parent" v-model="selectedParent">
+            <label class="form-label" for="category-parent">Parent Category</label>
+            <select class="form-control" 
+                    id="category-parent" 
+                    name="category-parent" 
+                    v-model="categoryStore.catNowClick.parent"
+                    :disabled="props.type === 'edit' && categoryStore.catNowClick.parent == 'null'">
                 <option :value="null">None</option>
                 <option v-for="category in parentCategories"
                         :key="category.key" 
@@ -59,7 +83,7 @@
                     name = "category-key"
                     id="category-key" 
                     :disabled="props.type === 'edit'"
-                    :value="props.category.key"
+                    :value="categoryStore.catNowClick.key"
                     required>
             <div id="category-key" class="form-text">
                     Text in Latin letters, written in one word
@@ -74,12 +98,19 @@
             <input type="text" class="form-control"
                     :class="!categoryStore.validCatInput.name?'is-invalid':''"
                     id="category-name" name="category-name" 
-                    :value = "props.category.name" 
+                    :value = "categoryStore.catNowClick.name" 
                     required>
                     <div v-if="!categoryStore.validCatInput.name" class="alert alert-danger">
                 {{categoryStore.validCatInput.nameMSG}}
             </div>
         </div>
-        <button type="submit" class="btn btn-primary">{{ textBtn }}</button>
+        <div class="row">
+            <div class="col-5">
+                <button type="submit" class="btn btn-primary">{{ textBtn }}</button>
+            </div>
+            <div class="col-5">
+                
+            </div>
+        </div>
     </form>
 </template>
