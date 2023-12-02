@@ -1,5 +1,6 @@
 //const verifyToken = require('./path/to/auth').verifyToken;
 const { getProductInCat, getProductInCatArray,} = require('../azure/apiAzure-prod.js');
+const { uploadFoto,} = require('../azure/apiAzure-blob.js');
 
 const getAllProductInOneCat_controller = async (req, res) => {
     try {
@@ -22,18 +23,24 @@ const getAllProductInArrayCat_controller = async (req, res) => { // cписок 
 }
 const addProductToCat_controller = async (req, res) => { // одбавление товара
     try {
+        console.log('In add controller PRODUCT ');
         const { nameForm, priceForm, catForm } = req.body;
         const file = req.file;
         // валидации
 
         if (!file) {
-            return res.status(400).send('Dont search File');
+            return res.status(200).json({err:true, msg: 'Dont search File'})
         }
         // Обработка и загрузка файла на Azure Blob Storage
-        
-        res.status(200).json('Its all okey imgUrl - ');
+        console.log('File is exists - OK');
+        const fileName = file.originalname; 
+        console.log('File name - ', fileName);
+        const fotoUrl = await uploadFoto(file, fileName);
+        console.log('Upload url - ', fotoUrl);
+
+        res.status(200).json({err:false , data:fotoUrl});
     } catch (error) {
-        res.status(500).send(error.message);
+        res.status(200).json({err:true, msg:error.message});
     }
 }
 

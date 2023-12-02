@@ -42,7 +42,7 @@ const getProductInCatArray = async (prodCats)=>{  //partitionKey
 
 
 const deleteProductInCat = async (catKey)=> {
-
+    
     return {err:false, msg:'', data:{count:5}};
 }
 

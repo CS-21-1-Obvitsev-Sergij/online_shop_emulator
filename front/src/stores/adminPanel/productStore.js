@@ -79,13 +79,21 @@ export const useProduct = defineStore('product',{
                 formData.append('price', data.price);
                 formData.append('foto', data.fileField.files[0]);
                 formData.append('cat', data.categoryKey);
-
-                this.errorForm = false;
+               
                 const result = await addProduct(formData);
-                return result;
+
+                if (!result.err) {
+                    this.errorForm = false;
+                    console.log('Ответ от сервера - урл - ', result.data);
+                } else {
+                    this.error = true;
+                    this.msg   = result.msg;
+                }
+
+                return;
             } catch(error) {
                 this.error = true;
-                this.msg   = error;
+                this.msg   = error.message;
             }
         },
         async updateProduct() {

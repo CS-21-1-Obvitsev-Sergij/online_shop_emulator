@@ -2,7 +2,9 @@ const express = require('express');
 const router = express.Router();
 const productController = require('../controller/productController.js');
 const multer = require('multer');
-const upload = multer({ dest: 'uploads/' });
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
+
 
 
 router.get('/:catKey', productController.getAllProductInOneCat_controller);

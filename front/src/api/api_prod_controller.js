@@ -48,7 +48,7 @@ export const addProduct = async (formData) => {
         }
         return await response.json(); 
     } catch (error) {
-        console.error('Error in add product . Error text: ', error);
+        return {err: true, msg:`Error in add CAT request:  ${error.message}`};
     }
 };
 
@@ -66,6 +66,6 @@ export const updateCategory = async (cat) => {
         }
         return await response.json(); 
     } catch (error) {
-        console.error('Ошибка при обновлении категории:', error);
+        return {err: true, msg:`Error in add CAT request:  ${error.message}`};
     }
 };

@@ -26,6 +26,7 @@ app.listen(PORT, async () => {
     // проверка флага о наличии инициализации
     // инициализация таблиц
       //await createTableIfNotExists(tableName);
+    // иинциализация Блоба
       console.log(`Server is running on port ${PORT}`);
   } catch (error) {
       console.error('Ошибка при создании таблицы:', error);
