@@ -7,10 +7,9 @@ export const getProductInCat = async (catKey) => {
             throw new Error(`Error: ${response.status}`);
         }
         const products = await response.json();
-        console.log('FRONT FETCH RESPONSE Products - ', products);
         return products;
     } catch (error) {
-        console.error('Ошибка при получении products list:', error);
+        return {err: true, msg:`Error in get Product in Cat request:  ${error.message}`};
     }
 }
 
@@ -28,10 +27,9 @@ export const getProductInCatArray = async (catKeys) => {
             throw new Error(`Error: ${response.status}`);
         }
         const products = await response.json();
-        console.log('FRONT FETCH RESPONSE Products - ', products);
         return products;
     } catch (error) {
-        console.error('Ошибка при получении products list:', error);
+        return {err: true, msg:`Error in get Product in Cat request:  ${error.message}`};
     }
 }
 
@@ -48,11 +46,11 @@ export const addProduct = async (formData) => {
         }
         return await response.json(); 
     } catch (error) {
-        return {err: true, msg:`Error in add CAT request:  ${error.message}`};
+        return {err: true, msg:`Error in add Product request:  ${error.message}`};
     }
 };
 
-export const updateCategory = async (cat) => {
+export const updateProduct = async (cat) => {
     try {
         const response = await fetch(`${API_URL}/category`, {
             method: 'PUT',
@@ -66,6 +64,6 @@ export const updateCategory = async (cat) => {
         }
         return await response.json(); 
     } catch (error) {
-        return {err: true, msg:`Error in add CAT request:  ${error.message}`};
+        return {err: true, msg:`Error in update Product request:  ${error.message}`};
     }
 };

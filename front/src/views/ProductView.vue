@@ -53,7 +53,8 @@ const handleSubmitAddForm = async () => {
     await productStore.addProduct(data);
 
     if (!productStore.errorForm) {
-        console.log('done form')
+        console.log('done form');
+        productStore.getProductsInCat(categoryStore.catNowClick.key);
         clearAddForm();
     } else {
         console.log('not DONE form');
@@ -63,9 +64,14 @@ const handleSubmitAddForm = async () => {
 const btnAddClick = ()=>{
     viewAddForm.value = !viewAddForm.value;
 }
+const btnEditProduct = (product) => {
+    productStore.isProductEdit = true;
+    productStore.nowEditProduct = product;
+}
 
 onMounted( async() => {
-   await categoryStore.getCategories();
+    productStore.products = [];
+    await categoryStore.getCategories();
 });
 </script>
 
@@ -119,12 +125,12 @@ onMounted( async() => {
                         <input type="hidden" name="catForm" id="catForm" :value="categoryStore.catNowClick.key">
                         <input type="submit" class="btn btn-info" value="Send Product">
                     </form>
+                    <hr />
                 </div>
             </div>
-            <hr />
-            {{ categoryStore.catNowClick }} 
+            
             <br />
-            Cat Keys - {{ categoryStore.mapCategoryKey }}
+           
             <div class="alert alert-info" v-if="!categoryStore.catNowClick">
                 <p>No category selected</p>
             </div>
@@ -133,12 +139,16 @@ onMounted( async() => {
                 <div class="alert alert-warning" v-if="productStore.products.length === 0">
                     <p>Not serach product in this category</p>
                 </div>
-                <div v-else v-for="product in productStore.products" :key="product.div" class="row">
-                    <div class="col-7">
-                        {{ product.name }}
+                <div v-else v-for="product in productStore.products" :key="product.div" class="row product-row">
+                    <div class="col-2">
+                       <img :src= "product.imageUrl" width = "80" height = "80"/>
+                    </div>
+                    <div class="col-4">
+                        <b>{{ product.name }}</b><br />
+                        <b>Price: </b> {{ product.price }} $
                     </div>
                     <div class="col-2">
-                        <button class="btn btn-warning">Edit</button>
+                        <button class="btn btn-warning" @click="btnEditProduct(product)" >Edit</button>
                     </div>
                     <div class="col-2">
                         <button class="btn btn-danger">Delete</button>
@@ -150,3 +160,12 @@ onMounted( async() => {
         </div>
     </div>
 </template>
+<style>
+.product-row {
+  
+    margin-bottom: 20px;
+}
+.product-row hr {
+    margin-top: 15px;
+}
+</style>

@@ -10,6 +10,8 @@ export const useProduct = defineStore('product',{
         error: false,
         errorForm: false,
         msgForm: '',
+        isProductEdit: false,
+        nowEditProduct: {},
     }),
 
     getters: {
@@ -25,26 +27,43 @@ export const useProduct = defineStore('product',{
         async getProductsInCat(catKey) {
             try {
                 const products = await getProductInCat(catKey);
-                this.products = products;
-                this.error = false;
+                if (!products.err) {
+                    this.error = false;
+                    this.products = products.data;
+                    console.log(this.products);
+                } else {
+                    this.error = true;
+                    this.msg   = products.msg;
+                    this.products = [];
+                }
+                return;
             } catch(error) {
                 this.error = true;
-                this.msg   = error;
+                this.msg   = error.message;
             }
         },
         async getProductsInCatArray(catKeys) {
             try {
                 const products = await getProductInCatArray(catKeys);
-                this.products = products;
-                this.error = false;
+                if (!products.err) {
+                    this.error = false;
+                    this.products = products.data;
+                } else {
+                    this.error = true;
+                    this.msg   = products.msg;
+                    this.products = [];
+                }
+                return;
             } catch(error) {
                 this.error = true;
-                this.msg   = error;
+                this.msg   = error.message;
             }
         },
         async addProduct(data) {
+            this.msgForm = '';
+            this.errorForm = false;
             try {
-                console.log('ADD PRODUCT formData - ');
+                console.log('ADD PRODUCT formData - ', data);
                 
                 // валидация параметров формы
                 if (!data.name) {
@@ -84,10 +103,12 @@ export const useProduct = defineStore('product',{
 
                 if (!result.err) {
                     this.errorForm = false;
-                    console.log('Ответ от сервера - урл - ', result.data);
+                    this.msgForm   = 'Product is add success!';
+                   
                 } else {
-                    this.error = true;
-                    this.msg   = result.msg;
+                    console.log('error in add');
+                    this.errorForm = true;
+                    this.msgForm   = result.msg;
                 }
 
                 return;
