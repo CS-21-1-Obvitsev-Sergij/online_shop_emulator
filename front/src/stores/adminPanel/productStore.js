@@ -1,7 +1,7 @@
 
 import { defineStore } from 'pinia';
 
-import {getProductInCat, getProductInCatArray, addProduct, updateProduct} from '@/api/api_prod_controller';
+import {getProductInCat, getProductInCatArray, addProduct, updateProduct, deleteProduct} from '@/api/api_prod_controller';
 
 export const useProduct = defineStore('product',{
     state: () => ({
@@ -181,12 +181,20 @@ export const useProduct = defineStore('product',{
             }
         },
 
-        async deleteProduct() {
+        async deleteProduct(product) {
             try {
                 console.log('delete');
+                const result = await deleteProduct(product);
+                if (!result.err) {
+                    this.errorForm = false;
+                    this.msgForm   = `Delete product with name ${product.name} is success`; 
+                } else {
+                    this.errorForm = true;
+                    this.msgForm   = 'Eror in delete product. Msg - ' + result.msg;
+                }
             } catch(error) {
-                this.error = true;
-                this.msg   = error;
+                this.errorForm = true;
+                this.msgForm   = 'Eror in delete product. Msg - ' + error.message;
             }
         },
         

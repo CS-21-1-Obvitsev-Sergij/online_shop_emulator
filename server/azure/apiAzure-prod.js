@@ -87,15 +87,14 @@ const addNewProduct = async (product) => {
 const updateProduct = async (product) => {
     try {
         const entity = {
-            PartitionKey: product.cat,
-            RowKey:       product.id,
+            partitionKey: product.cat,
+            rowKey:       product.id,
             name:         product.name,
             price:        product.price,
             imageUrl:     product.imageUrl,
             thumbUrl:     product.thumbUrl
           };
-        console.log('update prod - ', entity);
-        await client.updateEntity(entity, "Merge"); 
+        await client.updateEntity(entity); 
 
         return { err: false,
               msg: '',

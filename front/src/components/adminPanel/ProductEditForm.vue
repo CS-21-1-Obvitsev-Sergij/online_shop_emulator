@@ -30,7 +30,6 @@
 </script>
 
 <template>
-    <div class="alert alert-danger" v-if="productStore.errorForm">{{ productStore.msgForm }}</div>
     <form @submit.prevent="handleSubmitEditForm" >
         <div class="input-group mb-3">
             <label class="input-group-text" for="catNameEditForm">Category </label>

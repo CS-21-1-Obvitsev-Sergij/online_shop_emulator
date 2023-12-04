@@ -4,6 +4,7 @@ import CategoryList from '@/components/adminPanel/CategoryList..vue';
 import { useCategory } from '@/stores/adminPanel/categoryStore';
 import { useProduct } from '@/stores/adminPanel/productStore';
 import ProductEditForm from '@/components/adminPanel/ProductEditForm.vue';
+import AlertFormDiv from '@/components/adminPanel/AlertFormDiv.vue';
 
 const categoryStore = useCategory();
 const productStore  = useProduct();
@@ -65,12 +66,18 @@ const handleSubmitAddForm = async () => {
 
 const btnAddClick = ()=>{
     viewAddForm.value = !viewAddForm.value;
-}
+};
 const btnEditProduct = (product) => {
     productStore.isProductEdit = true;
     productStore.nowEditProduct = product;
     window.scrollTo(0,0);
-}
+};
+
+const btnDeleteProduct = (product) => {
+    const result = productStore.deleteProduct(product);
+
+    console.log(result);
+};
 
 onMounted( async() => {
     productStore.products = [];
@@ -95,19 +102,10 @@ onMounted( async() => {
                             <span v-else>Hide form</span> 
                     </button>
                 </div><br/><br/>
+                <AlertFormDiv />
                 <div class="alert alert-light" v-if="viewAddForm">
                     <b>Add product</b>
-                    <div    class="alert alert-success" 
-                            v-if="!productStore.errorForm && productStore.msgForm.length > 0"
-                            > 
-                                Add new product is ... DONE
-                    </div>
-                    <div    class="alert alert-warning" 
-                            v-if="productStore.errorForm"
-                            > 
-                                <h5>Error</h5>
-                                <p>{{ productStore.msgForm }}</p>
-                    </div>
+                    
                     <form @submit.prevent="handleSubmitAddForm">
                         <div class="input-group mb-3">
                             <label class="input-group-text" for="catNameForm">Category </label>
@@ -156,7 +154,7 @@ onMounted( async() => {
                         <button class="btn btn-warning" @click="btnEditProduct(product)" >Edit</button>
                     </div>
                     <div class="col-2">
-                        <button class="btn btn-danger">Delete</button>
+                        <button class="btn btn-danger" @click="btnDeleteProduct(product)">Delete</button>
                     </div>
                     <hr />
                 </div>

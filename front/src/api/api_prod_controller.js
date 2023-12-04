@@ -64,3 +64,20 @@ export const updateProduct = async (formData) => {
         return {err: true, msg:`Error in update Product request:  ${error.message}`};
     }
 };
+
+export const deleteProduct = async (delKey) => {
+    try {
+        const response = await fetch(`${API_URL}/product`, {
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(delKey)
+        });
+        if (!response.ok) {
+            throw new Error(`Error: ${response.status}`);
+        }
+        return await response.json(); 
+    } catch (error) {
+        return {err: true, msg:`Error in delete Product request:  ${error.message}`};
+    }
+};
