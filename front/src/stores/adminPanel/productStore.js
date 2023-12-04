@@ -1,7 +1,7 @@
 
 import { defineStore } from 'pinia';
 
-import {getProductInCat, getProductInCatArray, addProduct} from '@/api/api_prod_controller';
+import {getProductInCat, getProductInCatArray, addProduct, updateProduct} from '@/api/api_prod_controller';
 
 export const useProduct = defineStore('product',{
     state: () => ({
@@ -117,12 +117,67 @@ export const useProduct = defineStore('product',{
                 this.msg   = error.message;
             }
         },
-        async updateProduct() {
+        async updateProduct(data) {
+            console.log('IN UPDATE product store !');
+            this.msgForm = '';
+            this.errorForm = false;
             try {
-                console.log('update');
+                
+                // валидация параметров формы
+                if (!data.name) {
+                    this.errorForm = true;
+                    this.msgForm = 'Name  - empty';
+                    return;
+                }
+                if (!data.price || isNaN(data.price) || Number(data.price) <= 0) {
+                    
+                    this.errorForm = true;
+                    this.msgForm = 'Price  -  must be not empty AND its must be integer ';
+                    return;
+                }
+            
+                // Проверка файла
+                let file;
+                if (data.fileField.files.length === 0) {
+                    file = 'none';
+                } else {
+                    file = data.fileField.files[0];
+                    const validImageTypes = ['image/jpeg', 'image/png', 'image/gif'];
+                    if (!validImageTypes.includes(file.type)) {
+                        this.errorForm = true;
+                        this.msgForm = 'The file must be in IN format  (jpeg, png, gif)';
+                        return;
+                    }
+                } 
+                // данные на отправку
+                const formData = new FormData();
+                formData.append('name', data.name);
+                formData.append('price', data.price);
+                formData.append('imageUrl', data.imageUrl); 
+                formData.append('thumbUrl', data.thumbUrl);
+                if (file !== 'none') {
+                    formData.append('foto', file);
+                }
+                formData.append('cat', data.categoryKey);
+                formData.append('id', data.id);
+               
+                console.log('Ok data IN UPDATE product. formData - ', formData);
+                const result = await updateProduct(formData);
+
+                if (!result.err) {
+                    this.errorForm = false;
+                    this.msgForm   = '';
+                   
+                } else {
+                    console.log('error in add');
+                    this.errorForm = true;
+                    this.msgForm   = result.msg;
+                }
+
+                return;
             } catch(error) {
-                this.error = true;
-                this.msg   = error;
+                this.errorForm = true;
+                this.msgForm   = error.message;
             }
         },
 

@@ -98,7 +98,7 @@ const updateCategory = async (cat) => {
         return { err: false,
             msg: '',
             data: null
-   };
+        };
     } catch(err) {
         return { err: true,
             msg: err.message

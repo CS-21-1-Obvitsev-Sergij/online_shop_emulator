@@ -23,11 +23,23 @@ const uploadFoto = async (file, fileName)=> {
         return {err: false, data:imgUrl}
 
     } catch(err) {
-        return {err:true, msg:error.message}
+        return {err:true, msg:err.message}
+    }
+};
+
+const deleteFoto = async (blobName)=> {
+    try {
+        const containerClient = blobServiceClient.getContainerClient(containerName);
+        const blobClient = containerClient.getBlobClient(blobName);
+
+        await blobClient.delete();
+        return { err: false, msg: 'Blob успешно удален.' };
+    } catch (err) {
+        return { err: true, msg: err.message };
     }
 };
 
 module.exports = {
     uploadFoto,
-    
+    deleteFoto,
 };

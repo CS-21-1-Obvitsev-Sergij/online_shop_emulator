@@ -3,10 +3,12 @@ import { watch, onMounted, ref } from 'vue';
 import CategoryList from '@/components/adminPanel/CategoryList..vue';
 import { useCategory } from '@/stores/adminPanel/categoryStore';
 import { useProduct } from '@/stores/adminPanel/productStore';
+import ProductEditForm from '@/components/adminPanel/ProductEditForm.vue';
 
 const categoryStore = useCategory();
 const productStore  = useProduct();
 const viewAddForm   = ref(false);       // признак что надо открыть форму добавления товара
+
 
 const clearAddForm = () => {
     const nameForm = document.getElementById('nameForm');
@@ -67,6 +69,7 @@ const btnAddClick = ()=>{
 const btnEditProduct = (product) => {
     productStore.isProductEdit = true;
     productStore.nowEditProduct = product;
+    window.scrollTo(0,0);
 }
 
 onMounted( async() => {
@@ -83,7 +86,7 @@ onMounted( async() => {
             <CategoryList :categoryTree="categoryStore.categoryTree"/>
         </div>
         <div class="col-9">
-            <div class="row">
+            <div class="row" v-if="!productStore.isProductEdit">
                 <div class="col-2">
                     <button class="btn btn-primary" 
                             @click="btnAddClick" 
@@ -128,7 +131,9 @@ onMounted( async() => {
                     <hr />
                 </div>
             </div>
-            
+            <div class="product-edit-form" v-if="productStore.isProductEdit">
+                <ProductEditForm />
+            </div>
             <br />
            
             <div class="alert alert-info" v-if="!categoryStore.catNowClick">

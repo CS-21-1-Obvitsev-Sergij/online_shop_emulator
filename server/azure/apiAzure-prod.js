@@ -18,7 +18,14 @@ const getProductInCat = async (prodCat)=>{  //partitionKey
         });
 
         for await (const entity of entities) {
-            products.push(entity);
+            const prod = {  id:     entity.rowKey,
+                            name:   entity.name,
+                            price:  entity.price,
+                            cat:    entity.partitionKey,
+                            imageUrl: entity.imageUrl,
+                            thumbUrl: entity.thumbUrl
+                        }
+            products.push(prod);
         } 
 
         return {err:false, msg:'', data:products}
@@ -38,7 +45,14 @@ const getProductInCatArray = async (prodCats)=>{  //partitionKey
         });
 
         for await (const entity of entities) {
-            products.push(entity);
+            const prod = {  id:     entity.rowKey,
+                            name:   entity.name,
+                            price:  entity.price,
+                            cat:    entity.partitionKey,
+                            imageUrl: entity.imageUrl,
+                            thumbUrl: entity.thumbUrl
+                        }
+            products.push(prod);
         } 
 
         return {err:false, msg:'', data:products}
@@ -70,6 +84,30 @@ const addNewProduct = async (product) => {
     }
 };
 
+const updateProduct = async (product) => {
+    try {
+        const entity = {
+            PartitionKey: product.cat,
+            RowKey:       product.id,
+            name:         product.name,
+            price:        product.price,
+            imageUrl:     product.imageUrl,
+            thumbUrl:     product.thumbUrl
+          };
+        console.log('update prod - ', entity);
+        await client.updateEntity(entity, "Merge"); 
+
+        return { err: false,
+              msg: '',
+              data: null
+        };
+
+    } catch(err){
+        console.log('error update - ', err);
+        return {err:true, msg: err.message}
+    }
+};
+
 const deleteProductInCat = async (catKey)=> {
     
     return {err:false, msg:'', data:{count:5}};
@@ -80,5 +118,6 @@ const deleteProductInCat = async (catKey)=> {
     getProductInCatArray,
     deleteProductInCat,
     addNewProduct,
+    updateProduct,
     
 };

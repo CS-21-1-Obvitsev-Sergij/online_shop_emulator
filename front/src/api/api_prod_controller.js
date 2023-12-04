@@ -50,14 +50,11 @@ export const addProduct = async (formData) => {
     }
 };
 
-export const updateProduct = async (cat) => {
+export const updateProduct = async (formData) => {
     try {
-        const response = await fetch(`${API_URL}/category`, {
+        const response = await fetch(`${API_URL}/product`, {
             method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(cat)
+            body: formData
         });
         if (!response.ok) {
             throw new Error(`Error: ${response.status}`);

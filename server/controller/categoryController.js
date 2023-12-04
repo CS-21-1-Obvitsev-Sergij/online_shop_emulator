@@ -50,7 +50,7 @@ const updateCategory_controller = async (req, res) => {
         res.json({
             err: result.err,
             msg: result.msg,
-            data: categoryData
+            data: result.data
         });
     } catch (error) {
         res.json({
