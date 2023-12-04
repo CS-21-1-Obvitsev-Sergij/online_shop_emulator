@@ -65,13 +65,14 @@ export const updateProduct = async (formData) => {
     }
 };
 
-export const deleteProduct = async (delKey) => {
+export const deleteProduct = async (product) => {
     try {
         const response = await fetch(`${API_URL}/product`, {
+            method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(delKey)
+            body: JSON.stringify(product)
         });
         if (!response.ok) {
             throw new Error(`Error: ${response.status}`);

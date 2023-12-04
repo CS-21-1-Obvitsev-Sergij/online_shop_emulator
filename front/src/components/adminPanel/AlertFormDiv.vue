@@ -10,7 +10,7 @@ const productStore = useProduct();
     <div    class="alert alert-success" 
                             v-if="!productStore.errorForm && productStore.msgForm.length > 0"
                             > 
-                                Add new product is ... DONE
+                            {{ productStore.msgForm }}
                     </div>
                     <div    class="alert alert-warning" 
                             v-if="productStore.errorForm"

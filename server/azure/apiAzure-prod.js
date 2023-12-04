@@ -107,9 +107,17 @@ const updateProduct = async (product) => {
     }
 };
 
-const deleteProductInCat = async (catKey)=> {
-    
-    return {err:false, msg:'', data:{count:5}};
+const deleteProductInCat = async (partitionKey, rowKey)=> {
+    try {
+
+        await client.deleteEntity(partitionKey, rowKey);
+        return { err: false,
+            msg: '',
+            data: null
+      };
+    } catch(err) {
+        return {err:true, msg:err.message};
+    }
 }
 
   module.exports = {

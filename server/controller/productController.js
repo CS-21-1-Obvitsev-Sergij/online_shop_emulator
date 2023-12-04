@@ -1,5 +1,5 @@
 //const verifyToken = require('./path/to/auth').verifyToken;
-const { getProductInCat, getProductInCatArray, addNewProduct, updateProduct} = require('../azure/apiAzure-prod.js');
+const { getProductInCat, getProductInCatArray, addNewProduct, updateProduct, deleteProductInCat} = require('../azure/apiAzure-prod.js');
 const { uploadFoto, deleteFoto} = require('../azure/apiAzure-blob.js');
 const { v4: uuidv4 } = require('uuid');
 
@@ -128,7 +128,7 @@ const updateProduct_controller = async (req, res) => {
         result = await updateProduct(toUpdate);
         toReturn.err = result.err;
         toReturn.msg = result.msg;
-        
+
         res.status(200).json(toReturn);
     } catch (error) {
         res.status(200).json({err:true, msg:error.message});
@@ -138,16 +138,40 @@ const updateProduct_controller = async (req, res) => {
 
 const deleteProduct_controller = async (req, res) => {
     try {
-        const { idProduct} = req.body;
-        // валидация айди товара ?!?!
+        const { id, name, price, cat, imageUrl, thumbUrl } = req.body;
+        const toReturn = {err:false, msg:'', data:{}};
+        let result;
+        // валидация айди товара ?!?!  -- не сейчас 
 
         // для удаления есть айди товара (RowKey)
         // на сначала прочитаем данные о товаре
             // удалим из болба фотографии товара
             // удалим запись о товаре на таблице
-        res.status(200).json('Its ok ');
+
+        const urlImageParts = imageUrl.split('/');
+        const blobImageName = urlImageParts[urlImageParts.length - 1];
+            
+        result = await deleteFoto(blobImageName);
+        if (result.err) {
+            toReturn.err = true;
+            toReturn.msg += 'Erro in delete imageUrl \n' + result.message;
+        }
+        if (thumbUrl != 'none') {
+            const thumbUrlParts = thumbUrl.split('/');
+            const blobthumbName = thumbUrlParts[thumbUrlParts.length - 1];
+            result = await deleteFoto(blobthumbName);
+            if (result.err) {
+                toReturn.err = true;
+                toReturn.msg += '\nErro in delete thumbUrl \n' + result.message;
+            }
+        }
+        result = await deleteProductInCat(cat, id);
+        toReturn.err = result.err;
+        toReturn.msg += result.message;
+
+        res.status(200).json(toReturn);
     } catch (error) {
-        res.status(500).send(error.message);
+        res.status(200).json({err:true, msg:error.message});
     }
 }
 

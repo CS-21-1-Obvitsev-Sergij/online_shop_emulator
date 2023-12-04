@@ -73,10 +73,13 @@ const btnEditProduct = (product) => {
     window.scrollTo(0,0);
 };
 
-const btnDeleteProduct = (product) => {
-    const result = productStore.deleteProduct(product);
-
-    console.log(result);
+const btnDeleteProduct = async (product) => {
+    await productStore.deleteProduct(product);
+    if (categoryStore.catNowClick.children.length === 0) {
+        productStore.getProductsInCat(categoryStore.catNowClick.cat);
+    } else {
+        productStore.getProductsInCatArray(categoryStore.mapCategoryKey);
+    }
 };
 
 onMounted( async() => {
