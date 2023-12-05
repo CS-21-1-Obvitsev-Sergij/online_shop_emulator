@@ -12,6 +12,7 @@ export const useProduct = defineStore('product',{
         msgForm: '',
         isProductEdit: false,
         nowEditProduct: {},
+        productNow: {},
     }),
 
     getters: {
