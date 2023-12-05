@@ -75,8 +75,8 @@ const addProductToCat_controller = async (req, res) => { // одбавление
                 rowKey: toReturn.data.id,
                 tableName: tableName
             };
-            const resQ = await addMessageToQueue(nameQ, message);
-            console.log('RES QUEUE - ', resQ);
+            await addMessageToQueue(nameQ, message);
+            //console.log('RES QUEUE - ', resQ);
             //console.log('VSE OK. toReturn = ', toReturn);
             const result = await addNewProduct(toReturn.data);
             if (!result.err) {

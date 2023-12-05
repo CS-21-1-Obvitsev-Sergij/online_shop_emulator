@@ -116,7 +116,7 @@ const deleteProductInCat = async (partitionKey, rowKey)=> {
             data: null
       };
     } catch(err) {
-        return {err:true, msg:err.message};
+        return {err:true, msg:err.message, data:{partitionKey, rowKey}};
     }
 }
 

@@ -1,7 +1,8 @@
 //require('dotenv').config();
 //const connectionString = process.env.AZURE_STORAGE_CONNECTION_STRING;
 const { addCategory, getCategories, updateCategory, deleteCategory, getOneEntity, deleteOneCategory, getCategoriesWhithParent} = require('../azure/apiAzure-cat.js');
-const { deleteProductInCat,} = require('../azure/apiAzure-prod.js');
+const { deleteProductInCat, getProductInCat} = require('../azure/apiAzure-prod.js');
+const {  deleteFoto} = require('../azure/apiAzure-blob.js');
 //const response = {
 //    err: false,
 //    msg: '',
@@ -77,10 +78,12 @@ const getAllCategories_controller = async (req, res) => {
 }
 const deleteCategory_controller = async (req, res) => {
     try {
+
         const catKey = req.params.catKey;
+       //const { catKey} = req.body;
         let result = {};
         const toReturn = {err: false, msg: '', data: result.catKey};
-        //console.log('front send catKey to delete. catKey - ', catKey);
+        console.log('front send catKey to delete. catKey - ', catKey);
         // валидация ключа ?!
         // 1 - прочитать данные про катгеорию с таблицы
         //console.log('read cat info with key - ', catKey);
@@ -90,22 +93,25 @@ const deleteCategory_controller = async (req, res) => {
         //console.log('Not Error. Data is empty - ', isEmpty(result.data));
         // error
         if (!result.err) {
-            //console.log('Not Error. Data is empty - ', isEmpty(result.data));
+            console.log('Not Error. Data is empty - ', result.data);
             if (Object.keys(result.data).length === 0) {
-                //console.log('Cat is not FOUND !!!');
+                console.log('Cat is not FOUND !!!');
                 toReturn.err = true;
                 toReturn.msg = `Category not Found with key <${catKey}>`;
                 toReturn.data = {};
             } else  {
                 // нашли категорию
-                //console.log('Category is founded, catInfo - ', result.data);
+                console.log('Category is founded, catInfo - ', result.data);
                 if (result.data.ParentCategory == 'null') {
-                    //console.log('Это родительская категория - надо искать вложеные ...');
+                    console.log('Это родительская категория - надо искать вложеные ...');
                     const resChildCat = await getCategoriesWhithParent(catKey);
                     if (!resChildCat.err) {
                         let resChildError = false;
                         if (resChildCat.data.length > 0){
                             // удалаяем детей
+                            
+                            // удаляем все товары в них сначала
+
                             let delChildPromises = resChildCat.data.map(cat => deleteOneCategory(cat.rowKey));
                             let delChild = await Promise.all(delChildPromises);
                             resChildError = delChild.some(item => item.err === true);
@@ -129,8 +135,23 @@ const deleteCategory_controller = async (req, res) => {
                     }
                     
                 } else {
-                    //console.log('ктаегория с товарами -  надо удалить товары и потом категорию');
-                    const resDeleteProduct  = await deleteProductInCat(catKey);
+                    console.log('ктаегория с товарами -  надо удалить товары и потом категорию');
+                    // получаем все товары
+                    const products = await getProductInCat(catKey);
+                    const resDeleteProduct = {err:false};
+                    for await (const product of products.data) {
+                        const urlImageParts = product.imageUrl.split('/');
+                        const blobImageName = urlImageParts[urlImageParts.length - 1];
+                        await deleteFoto(blobImageName);
+                        if (products.data.thumbUrl !='none') {
+                            const urlImageParts2 = product.thumbUrl.split('/');
+                            const blobImageName2 = urlImageParts2[urlImageParts2.length - 1];
+                            await deleteFoto(blobImageName2);
+                        }
+                        const res = await deleteProductInCat(product.cat, product.id);
+                        if (res.err) { resDeleteProduct.err = true; resDeleteProduct.msg = res.msg; console.log('Err del prod - ', res.data)}
+                    };
+                  
                     if (!resDeleteProduct.err) {
                         const resDeleteCategory = await deleteOneCategory(catKey);
                         if (!resDeleteCategory.err) {
@@ -148,14 +169,16 @@ const deleteCategory_controller = async (req, res) => {
             }
         } else {
             //console.log('ERRRORR !');
+            console.log('To return - ', toReturn);
             toReturn = {err: true, msg: result.msg, data:{}};
         }
         
+        console.log('To return - ', toReturn);
         res.json(toReturn);
 
     } catch (error) {
         
-        //console.log(error.message);
+        console.log(error.message);
         res.json({
             err: true,
             msg: error.message,
