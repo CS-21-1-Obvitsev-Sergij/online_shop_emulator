@@ -1,7 +1,11 @@
 //const verifyToken = require('./path/to/auth').verifyToken;
 const { getProductInCat, getProductInCatArray, addNewProduct, updateProduct, deleteProductInCat} = require('../azure/apiAzure-prod.js');
 const { uploadFoto, deleteFoto} = require('../azure/apiAzure-blob.js');
+const { addMessageToQueue, } = require('../azure/apiAzure-queue.js');
 const { v4: uuidv4 } = require('uuid');
+
+const nameQ = process.env.NAME_QUEUE;
+const tableName = process.env.TABLE_NAME_PRODUCT;
 
 const getAllProductInOneCat_controller = async (req, res) => {
     try {
@@ -39,7 +43,6 @@ const getAllProductInArrayCat_controller = async (req, res) => { // cписок 
 }
 const addProductToCat_controller = async (req, res) => { // одбавление товара
     try {
-        console.log('In add controller PRODUCT ');
         const { name, price, cat } = req.body;
         const file = req.file;
         const toReturn = {err:false, msg:'', data:{}};
@@ -49,12 +52,12 @@ const addProductToCat_controller = async (req, res) => { // одбавление
             return res.status(200).json({err:true, msg: 'Dont search File', data:{}})
         }
         // Обработка и загрузка файла на Azure Blob Storage
-        console.log('File is exists - OK');
+        //console.log('File is exists - OK');
         const fileName = uuidv4();//file.originalname; 
-        console.log('File name - ', fileName);
+        //console.log('File name - ', fileName);
         const fotoUrl = await uploadFoto(file, fileName);
         if (!fotoUrl.err){
-            console.log('Upload url - ', fotoUrl);
+            //console.log('Upload url - ', fotoUrl);
 
             // создаем запись в таблице
             toReturn.data = {
@@ -65,6 +68,15 @@ const addProductToCat_controller = async (req, res) => { // одбавление
                 imageUrl: fotoUrl.data,
                 thumbUrl: 'none'
             }
+            // отправляем сообщение в очередь на ресайз
+            const message = {
+                imageUrl: fotoUrl.data,
+                partitionKey: cat,
+                rowKey: toReturn.data.id,
+                tableName: tableName
+            };
+            const resQ = await addMessageToQueue(nameQ, message);
+            console.log('RES QUEUE - ', resQ);
             //console.log('VSE OK. toReturn = ', toReturn);
             const result = await addNewProduct(toReturn.data);
             if (!result.err) {
@@ -123,6 +135,14 @@ const updateProduct_controller = async (req, res) => {
             const fileName = uuidv4();//file.originalname; 
             const fotoUrl = await uploadFoto(file, fileName);
             toUpdate.imageUrl = fotoUrl.data;
+
+            const message = {
+                imageUrl: toUpdate.imageUrl,
+                partitionKey: toUpdate.cat,
+                rowKey: toUpdate.id,
+                tableName: tableName
+            };
+            await addMessageToQueue(nameQ, message);
         }
         
         result = await updateProduct(toUpdate);

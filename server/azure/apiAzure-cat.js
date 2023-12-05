@@ -1,5 +1,5 @@
 require('dotenv').config();
-const connectionString = "UseDevelopmentStorage=true";
+const connectionString = process.env.AZURE_STORAGE_CONNECTION_STRING; //"UseDevelopmentStorage=true";
 const tableName = process.env.TABLE_NAME_CATEGORY;
 const { TableClient, odata } = require("@azure/data-tables");
 const client = TableClient.fromConnectionString(connectionString, tableName);
