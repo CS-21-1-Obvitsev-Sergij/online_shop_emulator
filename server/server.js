@@ -1,6 +1,8 @@
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+
+const { initTables, initBlob } = require('./azure/init_Azure.js');
 //const authRouter = require('./auth/auth.js');
 
 
@@ -25,9 +27,21 @@ app.listen(PORT, async () => {
   try {
     // проверка флага о наличии инициализации
     // инициализация таблиц
-      //await createTableIfNotExists(tableName);
-    // иинциализация Блоба
-      console.log(`Server is running on port ${PORT}`);
+    const res = await initTables();
+    if (res)
+    { 
+      const res2 = initBlob();
+      if (res2) {
+        console.log(`Server is running on port ${PORT}`);
+      } else {
+        console.log('Error init blob');
+        return 0;
+      }
+    } else {
+      console.log('Error init tables');
+      return 0;
+    }
+    
   } catch (error) {
       console.error('Ошибка при создании таблицы:', error);
   }
