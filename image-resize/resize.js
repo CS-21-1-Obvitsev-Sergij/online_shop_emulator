@@ -11,9 +11,10 @@ const queueServiceClient = require('./connect/queueConnect.js');
 const {uploadResizedImage  } = require('./connect/blobConnect.js');
 const { updateProduct } = require('./connect/tableConnect.js');
 
+
 async function processQueueMessages(queueName) {
     const queueClient = queueServiceClient.getQueueClient(queueName);
-
+    await queueClient.create();
     let stop = false;
     let errorCount = 0;
     while (!stop) {
