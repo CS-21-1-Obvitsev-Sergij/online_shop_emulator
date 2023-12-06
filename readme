@@ -48,23 +48,30 @@ BASE_BLOB_URL = "http://127.0.0.1:10000/devstoreaccount1"
 NAME_QUEUE = "resizeimage"
 
 
+# Домашне завдання №2
+Дата виконання - до 24го листопада
+## Mandatory assignment
+Create an online shop emulator.
+Admin panel emulator:
+- Create a web application with .NET 6 using C# as a programming language.
+- Allow to manage (create, edit, delete) goods categories. Each category contains a name and parent category. Categories need to be stored in Azure Table Storage.
+- Allow to manage (create, edit, delete) goods. Each good contains a name, price, category, image and thumbnail. Goods need to be stored in Azure Table Storage. Images and thumbnails should be stored in Azure Blob Storage.
+Storefront emulator:
+- Create a web application with .NET 6 using C# as a programming language.
+- On each page, the user should be able to see the tree of categories.
+- The category page should contain the list of goods from the current category and all child categories. For each item, page should show thumbnail, name, price.
+- The good page should show the image, name, price.
+Image converter:
+- Create a console application with .NET 6 using C# as a programming language.
+- Each time the image of good changes, the admin panel should send a message to the queue.
+- Image converter should monitor the queue, get the image, convert it to 64*64 pixels thumbnail and update the good with the thumbnail.
+## Optional assignment 1
+Automated tests created for emulators with .NET 6 using C# as a programming language. The code coverage level is at least 30% of branches (more coverage is better).
 
-Эмулятор панели администратора:
-
-Создайте веб-приложение на .NET 6 с использованием C# в качестве языка программирования.
-Должна быть возможность управления (создание, редактирование, удаление) категориями товаров. Каждая категория содержит имя и родительскую категорию. Категории необходимо хранить в Azure Table Storage.
-Должна быть возможность управления (создание, редактирование, удаление) товарами. Каждый товар содержит название, цену, категорию, изображение и миниатюру. Товары необходимо хранить в Azure Table Storage. Изображения и миниатюры должны храниться в Azure Blob Storage.
-Эмулятор витрины магазина:
-
-Создайте веб-приложение на .NET 6 с использованием C# в качестве языка программирования.
-На каждой странице пользователь должен иметь возможность видеть дерево категорий.
-Страница категории должна содержать список товаров из текущей категории и всех дочерних категорий. Для каждого товара страница должна показывать миниатюру, название, цену.
-Страница товара должна показывать изображение, название, цену.
-Конвертер изображений:
-
-Создайте консольное приложение на .NET 6 с использованием C# в качестве языка программирования.
-Каждый раз, когда изображение товара изменяется, панель администратора должна отправлять сообщение в очередь.
-Конвертер изображений должен отслеживать очередь, получать изображение, конвертировать его в миниатюру размером 64*64 пикселя и обновлять товар миниатюрой.
-Необязательное задание 1
-Автоматические тесты, созданные для эмуляторов на .NET 6 с использованием C# в качестве языка программирования. Уровень покрытия кода тестами должен быть не менее 30% ветвей (чем больше, тем лучше).
+## Assessment priorities (from high to low)
+- Functional requirements
+- Non-functional requirements
+        - Maintainability
+        - Testability
+        - Resiliency
 
