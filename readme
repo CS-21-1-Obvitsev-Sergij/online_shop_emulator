@@ -1,3 +1,54 @@
+Три части:
+- imag-resize - читает очередь в фоне и делает уменьшенную копию изображения 64-64
+- front - vue3 фронт магазина и админ-панели
+- server - node + express Работа с Azure Table / Blob / Qeueue 
+
+Запуск всего сразу из корневой директории:
+npm run start
+
+Инсталл всего сразу из корневой директории:
+npm run install-all
+
+Локальные параметры - в переменных окружения env
+
+imega-resize .env:
+AZURE_STORAGE_CONNECTION_STRING = "UseDevelopmentStorage=true"
+CONTAINER_NAME = "product"
+TABLE_NAME_PRODUCT = "product"
+NAME_QUEUE = "resizeimage"
+
+front .env:
+VUE_APP_API_URL='http://127.0.0.1:3000'
+
+server .env:
+AZURE_STORAGE_CONNECTION_STRING = "UseDevelopmentStorage=true"
+
+ANOTHER_SECRET="some_other_secret"
+#// 2 tables  category  // product
+TABLE_NAME_CATEGORY = "cat"
+#
+# PartitionKey - 'category'  тчоб хранились в одном разделе/серввере
+# RowKey: "electronics"
+# Name: "Electronics for YOU"
+# ParentCategory: "None"  // "electronics"
+#
+TABLE_NAME_PRODUCT = "product"
+#
+#PartitionKey: "Laptop"   // ключ категории товара (категория может иметь родительскую, а может нет(она сама родительская))
+#RowKey: "Laptop123"           // Уникальный ID товара
+#Name: "Gaming Laptop". // название товара
+#Price: "1500"
+#ImageURL: "http://.../laptop123.jpg"
+#ThumbnailURL: "http://.../laptop123_thumb.jpg"
+#ParentCategoryKey: "Electronics" // Основная категория, куда входит категория товара либо null если категория товара не имеет родительской
+#
+CONTAINER_NAME = "product"
+# url emulator
+BASE_BLOB_URL = "http://127.0.0.1:10000/devstoreaccount1"
+NAME_QUEUE = "resizeimage"
+
+
+
 Эмулятор панели администратора:
 
 Создайте веб-приложение на .NET 6 с использованием C# в качестве языка программирования.
