@@ -1,7 +1,14 @@
-require('dotenv').config();
-const { QueueServiceClient } = require("@azure/storage-queue");
-const connectionString = process.env.AZURE_STORAGE_CONNECTION_STRING;
+const { QueueServiceClient, StorageSharedKeyCredential } = require("@azure/storage-queue");
 
-const queueServiceClient = QueueServiceClient.fromConnectionString(connectionString);
+const accountName = process.env.AZURE_ACCOUNT_NAME;
+const accountKey = process.env.AZURE_ACCOUNT_KEY;
+const queueEndpoint = process.env.AZURE_QUEUE_POINT;
+
+const sharedKeyCredential = new StorageSharedKeyCredential(accountName, accountKey);
+
+const queueServiceClient = new QueueServiceClient(
+  `${queueEndpoint}`,
+  sharedKeyCredential
+);
 
 module.exports = queueServiceClient;

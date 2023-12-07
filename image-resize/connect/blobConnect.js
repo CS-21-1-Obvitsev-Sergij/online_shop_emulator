@@ -1,8 +1,14 @@
-const { BlobServiceClient } = require('@azure/storage-blob');
-
-const connectionString = process.env.AZURE_STORAGE_CONNECTION_STRING;
+const { BlobServiceClient, StorageSharedKeyCredential } = require('@azure/storage-blob');
+const accountName = process.env.AZURE_ACCOUNT_NAME;
+const accountKey = process.env.AZURE_ACCOUNT_KEY;
+const blobEndpoint = process.env.AZURE_BLOB_POINT;
 const containerName = process.env.CONTAINER_NAME;
-const blobServiceClient = BlobServiceClient.fromConnectionString(connectionString);
+
+const sharedKeyCredential = new StorageSharedKeyCredential(accountName, accountKey);
+const blobServiceClient = new BlobServiceClient(
+  `${blobEndpoint}`,
+  sharedKeyCredential
+);
 
 const uploadResizedImage = async (blobName, imageBuffer) => {
     try {

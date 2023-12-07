@@ -24,6 +24,8 @@ app.get('/', (req, res) => {
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, async () => {
+
+  console.log(`Server is running on port ${PORT}`);
   try {
     // проверка флага о наличии инициализации
     // инициализация таблиц
@@ -35,11 +37,11 @@ app.listen(PORT, async () => {
         console.log(`Server is running on port ${PORT}`);
       } else {
         console.log('Error init blob');
-        return 0;
+        
       }
     } else {
       console.log('Error init tables');
-      return 0;
+      
     }
     
   } catch (error) {

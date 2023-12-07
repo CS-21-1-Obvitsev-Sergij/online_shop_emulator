@@ -1,8 +1,14 @@
 require('dotenv').config();
-const { TableClient } = require("@azure/data-tables");
-const connectionString = process.env.AZURE_STORAGE_CONNECTION_STRING;
+const { TableClient, AzureNamedKeyCredential } = require("@azure/data-tables");
+
+const accountName = process.env.AZURE_ACCOUNT_NAME;
+const accountKey = process.env.AZURE_ACCOUNT_KEY;
 const tableName = process.env.TABLE_NAME_PRODUCT;
-const client = TableClient.fromConnectionString(connectionString, tableName);
+const tableEndpoint = process.env.AZURE_TABLE_POINT;
+
+const credentials = new AzureNamedKeyCredential(accountName, accountKey);
+const client = new TableClient(tableEndpoint, tableName, credentials, { allowInsecureConnection: true });
+
 
 const updateProduct = async (partitionKey, rowKey, thumbUrl) => {
     try {

@@ -6,7 +6,7 @@ const { v4: uuidv4 } = require('uuid');
 const nameQ = process.env.NAME_QUEUE;
 
 
-const containerBlob = process.env.CONTAINER_NAME;
+//const containerBlob = process.env.CONTAINER_NAME;
 const queueServiceClient = require('./connect/queueConnect.js');
 const {uploadResizedImage  } = require('./connect/blobConnect.js');
 const { updateProduct } = require('./connect/tableConnect.js');

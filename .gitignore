@@ -1,3 +1,9 @@
 node_modules
 .env
 ./server/.env
+Dockerfile
+docker-compose.yml
+.dockerignore
+./image-resize/.dockerignore
+./image-resize/.env
+./image-resize/Dockerfile

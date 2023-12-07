@@ -1,8 +1,23 @@
-require('dotenv').config();
+/*require('dotenv').config();
 const connectionString = process.env.AZURE_STORAGE_CONNECTION_STRING; //"UseDevelopmentStorage=true";
 const tableName = process.env.TABLE_NAME_CATEGORY;
 const { TableClient, odata } = require("@azure/data-tables");
 const client = TableClient.fromConnectionString(connectionString, tableName);
+*/
+
+require('dotenv').config();
+const { TableClient, AzureNamedKeyCredential, odata } = require("@azure/data-tables");
+
+const accountName = process.env.AZURE_ACCOUNT_NAME;
+const accountKey = process.env.AZURE_ACCOUNT_KEY;
+const tableName = process.env.TABLE_NAME_CATEGORY;
+const tableEndpoint = process.env.AZURE_TABLE_POINT;
+
+const credentials = new AzureNamedKeyCredential(accountName, accountKey);
+const client = new TableClient(tableEndpoint, tableName, credentials, { allowInsecureConnection: true });
+
+
+
 
 //const res = {
 //    err: false,

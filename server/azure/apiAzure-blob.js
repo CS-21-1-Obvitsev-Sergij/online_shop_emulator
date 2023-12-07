@@ -1,9 +1,17 @@
-const { BlobServiceClient, StorageSharedKeyCredential, newPipeline } = require('@azure/storage-blob');
-
-const connectionString = process.env.AZURE_STORAGE_CONNECTION_STRING;
-const containerName = process.env.CONTAINER_NAME;
+const { BlobServiceClient, StorageSharedKeyCredential } = require('@azure/storage-blob');
+const accountName = process.env.AZURE_ACCOUNT_NAME;
+const accountKey = process.env.AZURE_ACCOUNT_KEY;
+const blobEndpoint = process.env.AZURE_BLOB_POINT;
 const baseURL = process.env.BASE_BLOB_URL;
-const blobServiceClient = BlobServiceClient.fromConnectionString(connectionString);
+const containerName = process.env.CONTAINER_NAME;
+
+const sharedKeyCredential = new StorageSharedKeyCredential(accountName, accountKey);
+const blobServiceClient = new BlobServiceClient(
+  `${blobEndpoint}`,
+  sharedKeyCredential
+);
+
+
 
 const uploadFoto = async (file, fileName)=> {
     try {

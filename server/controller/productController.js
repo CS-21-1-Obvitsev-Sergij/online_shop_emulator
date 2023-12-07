@@ -19,6 +19,7 @@ const getAllProductInOneCat_controller = async (req, res) => {
             toReturn.err = true;
             toReturn.msg = 'Error in getAllproductIn OneCat \n' + products.msg;
         }
+        console.log('Products in cat - ', toReturn);
         res.status(200).json(toReturn);
     } catch (error) {
         res.status(200).json({err:true, msg:error.message});
