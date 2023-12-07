@@ -13,7 +13,7 @@
     <div class="container product-info">
         <div class="row">
             <div class="col-4 img-div">
-                <img :src="productStore.productNow.imageUrl" width="200" height="200">
+                <img :src="productStore.productNow.imageUrl.replace('azurite', 'localhost')" width="200" height="200">
             </div>
             <div class="col-4">
                 About: <br /><br />

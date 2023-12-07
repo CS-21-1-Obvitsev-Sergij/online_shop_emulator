@@ -147,7 +147,7 @@ onMounted( async() => {
                 </div>
                 <div v-else v-for="product in productStore.products" :key="product.div" class="row product-row">
                     <div class="col-2">
-                       <img :src= "product.thumbUrl" width = "80" height = "80"/>
+                       <img :src= "product.thumbUrl.replace('azurite', 'localhost')" width = "80" height = "80"/>
                     </div>
                     <div class="col-4">
                         <b>{{ product.name }}</b><br />

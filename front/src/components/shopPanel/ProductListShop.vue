@@ -20,7 +20,7 @@ const btnDetailsClick = (product) => {
     <div class="row" v-else>
         <div class="col-md-4" v-for="product in productStore.products" :key="product.id">
             <div class="card" style="width: 100%;">
-                <img :src="product.thumbUrl" 
+                <img :src="product.thumbUrl.replace('azurite', 'localhost')" 
                      class="card-img-top" 
                      :alt="product.name">
                 <div class="card-body">
