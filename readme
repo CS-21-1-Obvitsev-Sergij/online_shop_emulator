@@ -13,6 +13,11 @@ npm run install-all
 
 imega-resize .env:
 AZURE_STORAGE_CONNECTION_STRING = "UseDevelopmentStorage=true"
+AZURE_ACCOUNT_NAME = "devstoreaccount1"
+AZURE_ACCOUNT_KEY  = "Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw=="
+AZURE_TABLE_POINT  = "http://localhost:10002/devstoreaccount1"
+AZURE_BLOB_POINT   = "http://localhost:10000/devstoreaccount1"
+AZURE_QUEUE_POINT  = "http://localhost:10001/devstoreaccount1"
 CONTAINER_NAME = "product"
 TABLE_NAME_PRODUCT = "product"
 NAME_QUEUE = "resizeimage"
@@ -22,8 +27,12 @@ VUE_APP_API_URL='http://127.0.0.1:3000'
 
 server .env:
 AZURE_STORAGE_CONNECTION_STRING = "UseDevelopmentStorage=true"
+AZURE_ACCOUNT_NAME = "devstoreaccount1"
+AZURE_ACCOUNT_KEY  = "Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw=="
+AZURE_TABLE_POINT  = "http://localhost:10002/devstoreaccount1"
+AZURE_BLOB_POINT   = "http://localhost:10000/devstoreaccount1"
+AZURE_QUEUE_POINT  = "http://localhost:10001/devstoreaccount1"
 
-ANOTHER_SECRET="some_other_secret"
 #// 2 tables  category  // product
 TABLE_NAME_CATEGORY = "cat"
 #
@@ -44,9 +53,10 @@ TABLE_NAME_PRODUCT = "product"
 #
 CONTAINER_NAME = "product"
 # url emulator
-BASE_BLOB_URL = "http://127.0.0.1:10000/devstoreaccount1"
+BASE_BLOB_URL = "http://localhost:10000/devstoreaccount1"
 NAME_QUEUE = "resizeimage"
 
+# ---------------------------------------------------------------
 
 # Домашне завдання №2
 Дата виконання - до 24го листопада
